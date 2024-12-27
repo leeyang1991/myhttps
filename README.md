@@ -2,13 +2,12 @@
 ### Installation
 `pip install myhttps`
 
-
-####USAGE:
+#### USAGE:
 As a module from any location
 
 `python3 -m myhttps [-option value]`
 
-####OPTIONS:
+#### OPTIONS:
     --v             Version Info(**)
     --help          Help and usage Info(**)
     -p              Port Number [default: 11443]
@@ -16,3 +15,4 @@ As a module from any location
     -c              ssl cert file location
     -k              ssl key file location
     -mode           HTTPS or HTTP
+    
