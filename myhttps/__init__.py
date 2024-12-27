@@ -1,4 +1,4 @@
-__version__ = '0.0.12'
+__version__ = '0.0.13'
 __usage__ = """
     USAGE:
         As a module from any location
@@ -14,7 +14,3 @@ __usage__ = """
         -mode           HTTPS or HTTP
 
 """
-from outdated import check_outdated
-is_outdated, latest = check_outdated("myhttps", __version__)
-if is_outdated:
-    print("The package myhttps is out of date. Your version is %s, the latest is %s." % (__version__, latest))

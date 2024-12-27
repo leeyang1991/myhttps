@@ -1,7 +1,8 @@
 # coding=utf-8
+# __version__ = '0.0.12'
 import os, sys, codecs
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from os.path import isdir
+from outdated import check_outdated
 from socketserver import ThreadingMixIn
 import ssl
 from OpenSSL import crypto
@@ -34,8 +35,8 @@ class HTTP:
 class GenCert:
 
     def __init__(self):
-        pwd = self.get_sitepackages_dir()
-        self.certdir = os.path.join(pwd, 'cert')
+        sitepackages_dir = self.get_sitepackages_dir()
+        self.certdir = os.path.join(sitepackages_dir, 'cert')
         self.KEY_FILE = os.path.join(self.certdir, 'key.pem')
         self.CERT_FILE = os.path.join(self.certdir, 'cert.pem')
         self.CERT_FILE = os.path.join(self.certdir, 'cert.pem')
@@ -98,12 +99,9 @@ class Functions:
         pass
 
     def getVersion(self):
-        for line in self.read("__init__.py").splitlines():
-            print(line)
-            if line.startswith('__version__'):
-                delim = '"' if '"' in line else "'"
-                return line.split(delim)[1]
-            # raise RuntimeError("Unable to find version string.")
+        firstline = self.read("__init__.py").splitlines()[0]
+        ver = firstline.split("'")[1]
+        return ver
 
     def getUsage(self):
         st = False
@@ -126,6 +124,11 @@ class Functions:
             return fp.read()
 
 def main():
+    ver = Functions().getVersion()
+    print('current version:',ver)
+    is_outdated, latest = check_outdated("myhttps", ver)
+    if is_outdated:
+        print("The package myhttps is out of date. Your version is %s, the latest is %s." % (ver, latest))
     host = '0.0.0.0'
     port = 11443
 
@@ -151,6 +154,8 @@ def main():
         keyfile = sys.argv[sys.argv.index("-k") + 1]
     if "-mode" in sys.argv:
         mode = sys.argv[sys.argv.index("-mode") + 1]
+    pwd = os.path.dirname(os.path.realpath(__file__))
+    print('current shared dir:',pwd)
     if mode == 'HTTPS':
         _GenCert = GenCert()
         keyfile = _GenCert.KEY_FILE
@@ -166,6 +171,7 @@ def main():
         raise Exception("mode must be HTTPS or HTTP")
 
 if __name__ == "__main__":
-    # main()
+    main()
     # GenCert()
+    # Functions().getVersion()
     pass
