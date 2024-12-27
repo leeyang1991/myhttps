@@ -1,8 +1,8 @@
-__version__ = '0.0.11'
+__version__ = '0.0.12'
 __usage__ = """
     USAGE:
         As a module from any location
-            python3 -m pyhttps [-option value]
+            python3 -m myhttps [-option value]
 
     OPTIONS:
         --v             Version Info(**)

@@ -138,7 +138,7 @@ def main():
         print(usage)
         exit()
     if "--v" in sys.argv:
-        print("pyhttps version: ", version)
+        print("myhttps version: ", version)
         exit()
     if "-p" in sys.argv:
         port = sys.argv[sys.argv.index("-p") + 1]
