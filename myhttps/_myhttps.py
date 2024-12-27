@@ -154,7 +154,7 @@ def main():
         keyfile = sys.argv[sys.argv.index("-k") + 1]
     if "-mode" in sys.argv:
         mode = sys.argv[sys.argv.index("-mode") + 1]
-    pwd = os.path.dirname(os.path.realpath(__file__))
+    pwd = os.getcwd()
     print('current shared dir:',pwd)
     if mode == 'HTTPS':
         _GenCert = GenCert()
