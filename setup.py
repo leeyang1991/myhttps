@@ -22,6 +22,11 @@ setup(
     author='Yang Li',
     author_email='leeyang1991@gmail.com',
     packages=['myhttps'],
+    entry_points={
+        "console_scripts": [
+            "myhttps=myhttps.__main__:main",
+        ],
+    },
     url='https://github.com/leeyang1991/myhttps',
     python_requires='>=3',
     install_requires=[
@@ -29,3 +34,4 @@ setup(
     'outdated',
     ],
 )
+

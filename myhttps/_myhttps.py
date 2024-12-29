@@ -1,5 +1,4 @@
 # coding=utf-8
-# __version__ = '0.0.12'
 import os, sys, codecs
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from outdated import check_outdated
