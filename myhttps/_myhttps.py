@@ -122,6 +122,29 @@ class Functions:
         with codecs.open(os.path.join(here, rel_path), 'r') as fp:
             return fp.read()
 
+class DownThemAll:
+    def __init__(self):
+
+        pass
+
+
+    def download_website(self, url, output_dir=None):
+        if output_dir is None:
+            cmd = f'wget -c -r -np -k -L -p --no-check-certificate {url}'
+        else:
+            self.mkdir(output_dir,force=True)
+            cmd = f'wget -c -r -np -k -L -p --no-check-certificate {url} -P {output_dir}'
+        os.system(cmd)
+
+
+    def mkdir(self, dir, force=False):
+        if not os.path.isdir(dir):
+            if force == True:
+                os.makedirs(dir)
+            else:
+                os.mkdir(dir)
+
+
 def main():
     ver = Functions().getVersion()
     print('current version:',ver)
@@ -142,6 +165,16 @@ def main():
     if "--v" in sys.argv:
         print("myhttps version: ", version)
         exit()
+
+    if "-url" in sys.argv:
+        url = sys.argv[sys.argv.index("-url") + 1]
+        if "-outdir" in sys.argv:
+            outdir = sys.argv[sys.argv.index("-outdir") + 1]
+        else:
+            outdir = None
+        DownThemAll().download_website(url,outdir)
+        exit()
+
     if "-p" in sys.argv:
         port = sys.argv[sys.argv.index("-p") + 1]
         port = int(port)
@@ -153,6 +186,8 @@ def main():
         keyfile = sys.argv[sys.argv.index("-k") + 1]
     if "-mode" in sys.argv:
         mode = sys.argv[sys.argv.index("-mode") + 1]
+
+
     pwd = os.getcwd()
     print('current shared dir:',pwd)
     if mode == 'HTTPS':
@@ -170,7 +205,10 @@ def main():
         raise Exception("mode must be HTTPS or HTTP")
 
 if __name__ == "__main__":
-    main()
+    # main()
     # GenCert()
     # Functions().getVersion()
+    # url = 'https://127.0.0.1:11443/'
+    # Functions().
+    # DownThemAll().download_website(url,'test')
     pass
