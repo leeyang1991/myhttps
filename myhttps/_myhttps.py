@@ -6,6 +6,11 @@ from socketserver import ThreadingMixIn
 import ssl
 from OpenSSL import crypto
 import site
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+from urllib3.exceptions import InsecureRequestWarning
+
 
 class ThreadingSimpleServer(ThreadingMixIn, HTTPServer):
     pass
@@ -128,13 +133,44 @@ class DownThemAll:
         pass
 
 
-    def download_website(self, url, output_dir=None):
+    def download_wget(self, url, output_dir=None): # not compatible with Windows
         if output_dir is None:
             cmd = f'wget -c -r -np -k -L -p --no-check-certificate {url}'
         else:
             self.mkdir(output_dir,force=True)
             cmd = f'wget -c -r -np -k -L -p --no-check-certificate {url} -P {output_dir}'
         os.system(cmd)
+
+    def download_website(self, url, output_dir='myhttps_download'):
+        requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
+        response = requests.get(url, verify=False)
+        response.raise_for_status()
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+        links = soup.find_all('a')
+
+        os.makedirs(output_dir, exist_ok=True)
+
+        for link in links:
+            file_name = link.text.strip()
+            if not file_name or file_name == "../":
+                continue
+
+            file_url = urljoin(url, link['href'])
+            save_path = os.path.join(output_dir, file_name)
+
+            if file_name.endswith('/'):
+                print(f"Entering directory: {file_name}")
+                self.download_website(file_url, save_path)
+            else:
+                print(f"Downloading {file_name} from {file_url}")
+                file_response = requests.get(file_url, stream=True, verify=False)
+                file_response.raise_for_status()
+                with open(save_path, 'wb') as f:
+                    for chunk in file_response.iter_content(chunk_size=8192):
+                        f.write(chunk)
+                print(f"Saved: {save_path}")
 
 
     def mkdir(self, dir, force=False):
@@ -170,9 +206,9 @@ def main():
         url = sys.argv[sys.argv.index("-url") + 1]
         if "-outdir" in sys.argv:
             outdir = sys.argv[sys.argv.index("-outdir") + 1]
+            DownThemAll().download_website(url,outdir)
         else:
-            outdir = None
-        DownThemAll().download_website(url,outdir)
+            DownThemAll().download_website(url)
         exit()
 
     if "-p" in sys.argv:
@@ -210,5 +246,5 @@ if __name__ == "__main__":
     # Functions().getVersion()
     # url = 'https://127.0.0.1:11443/'
     # Functions().
-    # DownThemAll().download_website(url,'test')
+    # DownThemAll().download_website(url)
     pass

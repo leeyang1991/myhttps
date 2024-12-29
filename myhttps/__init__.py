@@ -1,4 +1,4 @@
-__version__ = '0.0.16'
+__version__ = '0.0.17'
 __usage__ = """
     USAGE:
         As a module from any location
@@ -12,5 +12,7 @@ __usage__ = """
         -c              ssl cert file location
         -k              ssl key file location
         -mode           HTTPS or HTTP
+        -url            url to download
+        -outdir         output directory
 
 """

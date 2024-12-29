@@ -32,6 +32,9 @@ setup(
     install_requires=[
     'pyOpenSSL',
     'outdated',
+    'urllib3',
+    'requests',
+    'beautifulsoup4',
     ],
 )
 
