@@ -15,4 +15,7 @@ As a module from any location
     -c              ssl cert file location
     -k              ssl key file location
     -mode           HTTPS or HTTP
+    -url            url to download
+    -outdir         output directory
+    -d              share directory
     

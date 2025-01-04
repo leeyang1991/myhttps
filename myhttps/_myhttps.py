@@ -17,11 +17,14 @@ class ThreadingSimpleServer(ThreadingMixIn, HTTPServer):
 
 class HTTPS:
 
-    def __init__(self,host,port,keyfile,certfile):
+    def __init__(self,host,port,keyfile,certfile,share_dir=None):
         print('keyfile =',keyfile)
         print('certfile =',certfile)
+
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         context.load_cert_chain(certfile=certfile, keyfile=keyfile)
+        if share_dir:
+            os.chdir(share_dir)
         httpd = ThreadingSimpleServer((host, port), SimpleHTTPRequestHandler)
         httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
         print("server started at https://%s:%s" % (host, port))
@@ -30,7 +33,9 @@ class HTTPS:
 
 class HTTP:
 
-    def __init__(self,host,port):
+    def __init__(self,host,port,share_dir=None):
+        if share_dir:
+            os.chdir(share_dir)
         httpd = ThreadingSimpleServer((host, port), SimpleHTTPRequestHandler)
         print("server started at http://%s:%s" % (host, port))
         httpd.serve_forever()
@@ -222,7 +227,10 @@ def main():
         keyfile = sys.argv[sys.argv.index("-k") + 1]
     if "-mode" in sys.argv:
         mode = sys.argv[sys.argv.index("-mode") + 1]
-
+    if "-d" in sys.argv:
+        share_dir = sys.argv[sys.argv.index("-d") + 1]
+    else:
+        share_dir = None
 
     pwd = os.getcwd()
     print('current shared dir:',pwd)
@@ -234,9 +242,9 @@ def main():
 
             if not os.path.exists(certfile):
                 _GenCert.cert_gen()
-        HTTPS(host,port,keyfile,certfile)
+        HTTPS(host,port,keyfile,certfile,share_dir)
     elif mode == 'HTTP':
-        HTTP(host,port)
+        HTTP(host,port,share_dir)
     else:
         raise Exception("mode must be HTTPS or HTTP")
 

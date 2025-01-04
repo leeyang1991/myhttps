@@ -1,4 +1,4 @@
-__version__ = '0.0.17'
+__version__ = '0.0.18'
 __usage__ = """
     USAGE:
         As a module from any location
@@ -14,5 +14,6 @@ __usage__ = """
         -mode           HTTPS or HTTP
         -url            url to download
         -outdir         output directory
+        -d              share directory
 
 """
