@@ -276,10 +276,6 @@ def main():
         port = int(port)
     if "-h" in sys.argv:
         host = sys.argv[sys.argv.index("-h") + 1]
-    if "-c" in sys.argv:
-        certfile = sys.argv[sys.argv.index("-c") + 1]
-    if "-k" in sys.argv:
-        keyfile = sys.argv[sys.argv.index("-k") + 1]
     if "-mode" in sys.argv:
         mode = sys.argv[sys.argv.index("-mode") + 1]
     if "-d" in sys.argv:
@@ -291,12 +287,14 @@ def main():
     print('current shared dir:',share_dir)
     if mode.lower() == 'https':
         _GenCert = GenCert()
-        keyfile = _GenCert.KEY_FILE
-        certfile = _GenCert.CERT_FILE
         if not "-c" in sys.argv:
-
+            keyfile = _GenCert.KEY_FILE
+            certfile = _GenCert.CERT_FILE
             if not os.path.exists(certfile):
                 _GenCert.cert_gen()
+        else:
+            certfile = sys.argv[sys.argv.index("-c") + 1]
+            keyfile = sys.argv[sys.argv.index("-k") + 1]
         HTTPS(host,port,keyfile,certfile,share_dir)
     elif mode.lower() == 'http':
         HTTP(host,port,share_dir)
