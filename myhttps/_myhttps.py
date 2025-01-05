@@ -219,18 +219,17 @@ class Get_my_ip:
         print("server started at %s:%s" % (host, port))
         sucess = False
         Exception_list = []
-        try:
-            public_ip = self.get_public_ip1()
-            sucess = True
-        except Exception as e:
-            public_ip = None
-            Exception_list.append(e)
-        try:
-            public_ip = self.get_public_ip2()
-            sucess = True
-        except Exception as e:
-            public_ip = None
-            Exception_list.append(e)
+        get_pub_ip_obj_list = [self.get_public_ip1, self.get_public_ip2]
+        public_ip = None
+
+        for pub_ip_obj in get_pub_ip_obj_list:
+            try:
+                public_ip = pub_ip_obj()
+                sucess = True
+                break
+            except Exception as e:
+                Exception_list.append(e)
+
         if not sucess:
             for e in Exception_list:
                 print(e)
@@ -287,7 +286,7 @@ def main():
         share_dir = os.getcwd()
 
     print('current shared dir:',share_dir)
-    if mode == 'HTTPS':
+    if mode.lower() == 'https':
         _GenCert = GenCert()
         keyfile = _GenCert.KEY_FILE
         certfile = _GenCert.CERT_FILE
@@ -296,7 +295,7 @@ def main():
             if not os.path.exists(certfile):
                 _GenCert.cert_gen()
         HTTPS(host,port,keyfile,certfile,share_dir)
-    elif mode == 'HTTP':
+    elif mode.lower() == 'http':
         HTTP(host,port,share_dir)
     else:
         raise Exception("mode must be HTTPS or HTTP")
@@ -309,6 +308,5 @@ if __name__ == "__main__":
     # url = 'https://127.0.0.1:11443/'
     # Functions().
     # DownThemAll().download_website(url)
-    ip = Get_my_ip().get_public_ip2()
-    print(ip)
+    # ip = Get_my_ip().print_ip('127.0.0.1',11443,'https')
     pass
