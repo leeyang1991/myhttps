@@ -1,12 +1,9 @@
-__version__ = '0.0.20'
+__version__ = '0.0.24'
 __usage__ = """
     USAGE:
-        As a module from any location
-            python3 -m myhttps [-option value]
+        myhttps [-option value]
 
     OPTIONS:
-        --v             Version Info(**)
-        --help          Help and usage Info(**)
         -p              Port Number [default: 11443]
         -h              Host address
         -c              ssl cert file location
@@ -15,5 +12,4 @@ __usage__ = """
         -url            url to download
         -outdir         output directory
         -d              share directory
-
 """

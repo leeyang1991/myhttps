@@ -35,6 +35,7 @@ setup(
     'urllib3',
     'requests',
     'beautifulsoup4',
+    'ifcfg'
     ],
 )
 

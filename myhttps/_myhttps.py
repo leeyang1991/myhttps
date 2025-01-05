@@ -6,10 +6,12 @@ from socketserver import ThreadingMixIn
 import ssl
 from OpenSSL import crypto
 import site
-import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from urllib3.exceptions import InsecureRequestWarning
+import ifcfg
+import json
+import requests
 
 
 class ThreadingSimpleServer(ThreadingMixIn, HTTPServer):
@@ -27,9 +29,8 @@ class HTTPS:
             os.chdir(share_dir)
         httpd = ThreadingSimpleServer((host, port), SimpleHTTPRequestHandler)
         httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
-        print("server started at https://%s:%s" % (host, port))
+        Get_my_ip().print_ip(host, port, 'https')
         httpd.serve_forever()
-        pass
 
 class HTTP:
 
@@ -37,7 +38,7 @@ class HTTP:
         if share_dir:
             os.chdir(share_dir)
         httpd = ThreadingSimpleServer((host, port), SimpleHTTPRequestHandler)
-        print("server started at http://%s:%s" % (host, port))
+        Get_my_ip().print_ip(host,port,'http')
         httpd.serve_forever()
         pass
 
@@ -185,6 +186,63 @@ class DownThemAll:
             else:
                 os.mkdir(dir)
 
+class Get_my_ip:
+    def __init__(self):
+        pass
+
+    def get_public_ip1(self):
+        requests.packages.urllib3.util.connection.HAS_IPV6 = False
+        ip = requests.get('https://api.ipify.org').text
+        return ip
+
+    def get_public_ip2(self):
+        requests.packages.urllib3.util.connection.HAS_IPV6 = False
+        ip = requests.get('https://ifconfig.me/ip').text
+        return ip
+
+    def get_local_ip(self):
+        ip_list = []
+        devices_list = []
+
+        for name, interface in ifcfg.interfaces().items():
+            json_data = json.dumps(interface, indent=4)
+            device = interface['device']
+            inet4 = interface['inet4']
+            for i, ip in enumerate(inet4):
+                if ip == '127.0.0.1':
+                    continue
+                ip_list.append(inet4[i])
+                devices_list.append(device)
+        return ip_list, devices_list
+
+    def print_ip(self,host,port,mode):
+        print("server started at %s:%s" % (host, port))
+        sucess = False
+        Exception_list = []
+        try:
+            public_ip = self.get_public_ip1()
+            sucess = True
+        except Exception as e:
+            public_ip = None
+            Exception_list.append(e)
+        try:
+            public_ip = self.get_public_ip2()
+            sucess = True
+        except Exception as e:
+            public_ip = None
+            Exception_list.append(e)
+        if not sucess:
+            for e in Exception_list:
+                print(e)
+                print('-----')
+        local_ip_list, devices_list = self.get_local_ip()
+        if public_ip:
+            print(f'public: {mode}://{public_ip}:{port}')
+        else:
+            pass
+        for ip, device in zip(local_ip_list, devices_list):
+            print(f'{device}: http://{ip}:{port}')
+
 
 def main():
     ver = Functions().getVersion()
@@ -200,12 +258,7 @@ def main():
 
     usage = Functions().getUsage()
     version = Functions().getVersion()
-    if "--help" in sys.argv:
-        print(usage)
-        exit()
-    if "--v" in sys.argv:
-        print("myhttps version: ", version)
-        exit()
+    print(usage)
 
     if "-url" in sys.argv:
         url = sys.argv[sys.argv.index("-url") + 1]
@@ -248,6 +301,7 @@ def main():
     else:
         raise Exception("mode must be HTTPS or HTTP")
 
+
 if __name__ == "__main__":
     # main()
     # GenCert()
@@ -255,4 +309,6 @@ if __name__ == "__main__":
     # url = 'https://127.0.0.1:11443/'
     # Functions().
     # DownThemAll().download_website(url)
+    ip = Get_my_ip().get_public_ip2()
+    print(ip)
     pass
