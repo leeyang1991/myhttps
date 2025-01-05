@@ -241,7 +241,7 @@ class Get_my_ip:
         else:
             pass
         for ip, device in zip(local_ip_list, devices_list):
-            print(f'{device}: http://{ip}:{port}')
+            print(f'{device}: {mode}://{ip}:{port}')
 
 
 def main():
