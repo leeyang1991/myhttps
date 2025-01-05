@@ -217,6 +217,9 @@ class Get_my_ip:
 
     def print_ip(self,host,port,mode):
         print("server started at %s:%s" % (host, port))
+        if host != '0.0.0.0':
+            print(f'url: {mode}://{host}:{port}')
+            return
         sucess = False
         Exception_list = []
         get_pub_ip_obj_list = [self.get_public_ip1, self.get_public_ip2]
@@ -308,5 +311,5 @@ if __name__ == "__main__":
     # url = 'https://127.0.0.1:11443/'
     # Functions().
     # DownThemAll().download_website(url)
-    # ip = Get_my_ip().print_ip('127.0.0.1',11443,'https')
+    # Get_my_ip().print_ip('127.0.0.1',11443,'https')
     pass
